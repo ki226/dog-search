@@ -1,0 +1,44 @@
+.Main {
+  .title {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .dog-name-layout {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    height: 150px;
+    overflow: scroll;
+    margin: 10px 0;
+    border: 1px solid black;
+  }
+
+  .input-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+
+    .search-input {
+      margin: 0 5px;
+    }
+
+    .search-btn {
+      width: 50px;
+      height: 20px;
+    }
+  }
+  .ImgLayout {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+
+    .dogImg {
+      margin: 2px 2px;
+      width: 19%;
+      height: 800px;
+    }
+  }
+}

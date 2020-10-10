@@ -1,0 +1,11 @@
+.ImgLayout {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+
+  .dogImg {
+    margin: 2px 2px;
+    width: 19%;
+    height: 800px;
+  }
+}
