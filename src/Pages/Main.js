@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./Main.scss";
 
 function Main() {
@@ -6,10 +6,6 @@ function Main() {
   const [dogInfo, setDogInfo] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchBtnClick, setSearchBtnClick] = useState(false);
-
-  const viewport = useRef();
-  const target = useRef();
-  const basicCount = 30;
 
   useEffect(() => {
     fetch("https://dog.ceo/api/breeds/list/all")
@@ -20,9 +16,7 @@ function Main() {
 
   useEffect(() => {
     if (searchBtnClick === true && alldog.includes(searchText)) {
-      fetch(
-        `https://dog.ceo/api/breed/${searchText}/images/random/${basicCount}`
-      )
+      fetch(`https://dog.ceo/api/breed/${searchText}/images/random/30`)
         .then((res) => res.json())
         .then((res) => setDogInfo(res.message));
     } else if (searchBtnClick === true && !alldog.includes(searchText)) {
@@ -39,8 +33,14 @@ function Main() {
     setSearchBtnClick(true);
   };
 
+  const enterKeyPress = (e) => {
+    if (e.key === "Enter") {
+      btnClick();
+    }
+  };
+
   return (
-    <div className="Main" ref={viewport}>
+    <div className="Main">
       <h3 className="title">Dog Search!</h3>
       <p>검색 가능한 단어</p>
       <div className="dog-name-layout">
@@ -57,6 +57,7 @@ function Main() {
           className="search-input"
           placeholder="Dog Search"
           onChange={dogSearch}
+          onKeyPress={enterKeyPress}
         ></input>
         <button className="serch-btn" type="button" onClick={btnClick}>
           검색
@@ -65,14 +66,13 @@ function Main() {
       <div className="ImgLayout">
         {dogInfo &&
           dogInfo.map((dog, idx) => {
-            const lastEl = idx === dogInfo.length - 1;
+            const lastDog = idx === dogInfo.length - 1;
             return (
               <img
-                className={`dogImg ${lastEl && "last"}`}
+                className={`dogImg ${lastDog && "last"}`}
                 src={dog}
                 alt={idx}
                 key={idx}
-                ref={lastEl ? target : null}
               ></img>
             );
           })}
