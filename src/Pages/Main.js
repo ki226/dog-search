@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Main.scss";
 
 function Main() {
@@ -6,6 +6,8 @@ function Main() {
   const [dogInfo, setDogInfo] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchBtnClick, setSearchBtnClick] = useState(false);
+  const [basicCount, setBasicCount] = useState(20);
+  const [element, setElement] = useState(null);
 
   useEffect(() => {
     fetch("https://dog.ceo/api/breeds/list/all")
@@ -16,13 +18,45 @@ function Main() {
 
   useEffect(() => {
     if (searchBtnClick === true && alldog.includes(searchText)) {
-      fetch(`https://dog.ceo/api/breed/${searchText}/images/random/30`)
+      fetch(`https://dog.ceo/api/breed/${searchText}/images`)
         .then((res) => res.json())
-        .then((res) => setDogInfo(res.message));
+        .then((res) => setDogInfo(res.message.slice(0, basicCount)));
     } else if (searchBtnClick === true && !alldog.includes(searchText)) {
       alert("입력하신 이름과 일치하는 결과가 없습니다.");
     }
-  }, [alldog, searchBtnClick, searchText]);
+  }, [alldog, basicCount, searchBtnClick, searchText]);
+
+  const countHandle = () => {
+    setBasicCount(basicCount + 12);
+  };
+
+  const observer = useRef(
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            countHandle();
+          }
+        });
+      },
+      { threshold: 1 }
+    )
+  );
+
+  useEffect(() => {
+    const currentElement = element;
+    const currentObserver = observer.current;
+
+    if (currentElement) {
+      currentObserver.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        currentObserver.unobserve(currentElement);
+      }
+    };
+  }, [element]);
 
   const dogSearch = (e) => {
     setSearchText(e.target.value);
@@ -63,20 +97,21 @@ function Main() {
           검색
         </button>
       </section>
-      <div className="ImgLayout">
+      <section className="ImgLayout">
         {dogInfo &&
           dogInfo.map((dog, idx) => {
-            const lastDog = idx === dogInfo.length - 1;
+            const lastEl = idx === dogInfo.length - 1;
             return (
               <img
-                className={`dogImg ${lastDog && "last"}`}
+                className={`${searchText} ${lastEl && "last"}`}
                 src={dog}
                 alt={idx}
                 key={idx}
+                ref={setElement}
               ></img>
             );
           })}
-      </div>
+      </section>
     </div>
   );
 }
